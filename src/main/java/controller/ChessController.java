@@ -3,6 +3,7 @@ package controller;
 import controller.command.Command;
 import controller.command.Commands;
 import domain.game.Game;
+import domain.piece.info.Color;
 import java.util.List;
 import view.InputView;
 import view.OutputView;
@@ -17,6 +18,7 @@ public class ChessController {
         while (game.isNotEnded()) {
             readyForStart(game);
             runningGame(game);
+            endGame(game);
         }
     }
 
@@ -31,6 +33,12 @@ public class ChessController {
         while (game.isStarted()) {
             executeCommand(game);
         }
+    }
+
+    private void endGame(final Game game) {
+        final double whiteScore = game.calculateScore(Color.WHITE);
+        final double blackScore = game.calculateScore(Color.BLACK);
+        OutputView.printGameEndMessage(whiteScore, blackScore);
     }
 
     private void executeCommand(final Game game) {

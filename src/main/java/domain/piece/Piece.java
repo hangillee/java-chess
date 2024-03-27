@@ -31,6 +31,10 @@ public abstract class Piece {
         this.color.isSameColor(color);
     }
 
+    public boolean isColorOf(final Color color) {
+        return this.color == color;
+    }
+
     public boolean isNotNone() {
         return type != Type.NONE;
     }

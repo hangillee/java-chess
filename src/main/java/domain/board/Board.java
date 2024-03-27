@@ -33,6 +33,12 @@ public class Board {
         turn = Color.opposite(turn);
     }
 
+    private void validateTurnOfPiece(final Piece currentPiece) {
+        if (currentPiece.isNotSameColor(turn)) {
+            throw new IllegalArgumentException("현재 차례가 아닙니다.");
+        }
+    }
+
     private List<Position> findMovablePositions(final Position source, final Piece currentPiece,
                                                 final List<Direction> directions) {
         final MoveStrategy strategy = currentPiece.strategy();
@@ -41,12 +47,6 @@ public class Board {
                 .filter(this::isFileInBoard)
                 .filter(this::isRankInBoard)
                 .toList();
-    }
-
-    private void validateTurnOfPiece(final Piece currentPiece) {
-        if (currentPiece.isNotSameColor(turn)) {
-            throw new IllegalArgumentException("현재 차례가 아닙니다.");
-        }
     }
 
     private void updateBoard(final Position source, final Position target, final Piece currentPiece) {
@@ -68,5 +68,12 @@ public class Board {
 
     public Map<Position, Piece> squares() {
         return squares;
+    }
+
+    public boolean isKingDead() {
+        return squares.values()
+                .stream()
+                .filter(piece -> piece.isColorOf(turn))
+                .noneMatch(piece -> piece.type() == Type.KING);
     }
 }

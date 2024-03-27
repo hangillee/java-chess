@@ -18,7 +18,7 @@ public enum Score {
         this.value = value;
     }
 
-    public double findScoreByType(final Type type) {
+    public static double findScoreByType(final Type type) {
         return Arrays.stream(Score.values())
                 .filter(score -> score.type == type)
                 .findFirst()

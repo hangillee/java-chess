@@ -18,6 +18,7 @@ public class Commands {
         return new Commands(Arrays.asList(
                 StartCommand.of(game),
                 MoveCommand.of(game),
+                StatusCommand.of(game),
                 EndCommand.of(game)
         ));
     }
