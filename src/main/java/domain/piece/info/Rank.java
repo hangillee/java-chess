@@ -14,7 +14,7 @@ public enum Rank {
     TWO(1),
     ONE(0);
 
-    public static final String RANK_NOT_FOUND = "랭크가 잘못되었습니다.";
+    public static final String RANK_NOT_FOUND = "해당하는 랭크를 찾을 수 없습니다.";
     private final int index;
 
     Rank(final int index) {
