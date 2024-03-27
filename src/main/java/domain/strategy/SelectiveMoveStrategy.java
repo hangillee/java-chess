@@ -3,14 +3,13 @@ package domain.strategy;
 import domain.board.Position;
 import domain.piece.Piece;
 import domain.piece.info.Direction;
+import domain.piece.info.File;
+import domain.piece.info.Rank;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class SelectiveMoveStrategy implements MoveStrategy {
-    private static final int BOARD_UPPER_BOUND = 7;
-    private static final int BOARD_LOWER_BOUND = 0;
-
     @Override
     public List<Position> movablePositions(final Position source, final List<Direction> directions,
                                            final Map<Position, Piece> pieces) {
@@ -60,10 +59,10 @@ public class SelectiveMoveStrategy implements MoveStrategy {
     }
 
     private boolean isNextRankInBoard(final int nextRank) {
-        return nextRank >= BOARD_LOWER_BOUND && nextRank <= BOARD_UPPER_BOUND;
+        return Rank.isValid(nextRank);
     }
 
     private boolean isNextFileInBoard(final int nextFile) {
-        return nextFile >= BOARD_LOWER_BOUND && nextFile <= BOARD_UPPER_BOUND;
+        return File.isValid(nextFile);
     }
 }

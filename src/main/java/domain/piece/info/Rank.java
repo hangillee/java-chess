@@ -28,6 +28,11 @@ public enum Rank {
                 .orElseThrow(() -> new IllegalArgumentException(RANK_NOT_FOUND));
     }
 
+    public static boolean isValid(final int value) {
+        return Arrays.stream(values())
+                .anyMatch(rank -> rank.index == value);
+    }
+
     public int index() {
         return index;
     }

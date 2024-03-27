@@ -34,6 +34,11 @@ public enum File {
                 .orElseThrow(() -> new IllegalArgumentException(FILE_NOT_FOUND));
     }
 
+    public static boolean isValid(final int value) {
+        return Arrays.stream(values())
+                .anyMatch(file -> file.index == value);
+    }
+
     public int index() {
         return index;
     }
