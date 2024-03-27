@@ -5,8 +5,6 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import domain.board.Board;
-import domain.board.BoardInitiator;
 import domain.board.Position;
 import domain.piece.info.File;
 import domain.piece.info.Rank;
@@ -19,7 +17,7 @@ class GameTest {
 
     @BeforeEach
     void setUp() {
-        game = new Game(new Board(BoardInitiator.init()));
+        game = new Game();
     }
 
     @Test

@@ -1,6 +1,7 @@
 package domain.game;
 
 import domain.board.Board;
+import domain.board.BoardInitiator;
 import domain.board.Position;
 import domain.game.state.Init;
 import domain.game.state.State;
@@ -9,9 +10,9 @@ public class Game {
     private State state;
     private final Board board;
 
-    public Game(final Board board) {
+    public Game() {
         this.state = new Init();
-        this.board = board;
+        this.board = new Board(BoardInitiator.init());
     }
 
     public void moveByPosition(final Position source, final Position target) {

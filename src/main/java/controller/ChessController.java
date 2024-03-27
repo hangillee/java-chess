@@ -2,8 +2,6 @@ package controller;
 
 import controller.command.Command;
 import controller.command.Commands;
-import domain.board.Board;
-import domain.board.BoardInitiator;
 import domain.game.Game;
 import java.util.List;
 import view.InputView;
@@ -14,11 +12,9 @@ public class ChessController {
     public static final int COMMAND_INDEX = 0;
 
     public void start() {
-        final Board board = new Board(BoardInitiator.init());
-        Game game = new Game(board);
+        Game game = new Game();
 
         while (game.isNotEnded()) {
-            game = new Game(board);
             readyForStart(game);
             runningGame(game);
         }
