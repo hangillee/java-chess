@@ -1,6 +1,5 @@
 package view.dto;
 
-import domain.board.Board;
 import domain.board.Position;
 import domain.piece.Piece;
 import java.util.ArrayList;
@@ -15,8 +14,8 @@ public class DtoMapper {
     private DtoMapper() {
     }
 
-    public static RankInfo getPieceShapeOn(final Board board, final int rank) {
-        final List<Piece> pieces = getPiecesOn(board, rank);
+    public static RankInfo getPieceShapeOn(final Map<Position, Piece> squares, final int rank) {
+        final List<Piece> pieces = getPiecesOn(squares, rank);
         final List<String> pieceShapes = new ArrayList<>();
 
         for (final Piece piece : pieces) {
@@ -25,9 +24,9 @@ public class DtoMapper {
         return new RankInfo(pieceShapes);
     }
 
-    private static List<Piece> getPiecesOn(final Board board, final int rank) {
-        final Map<Position, Piece> squares = board.squares();
-        return squares.entrySet().stream()
+    private static List<Piece> getPiecesOn(final Map<Position, Piece> squares, final int rank) {
+        return squares.entrySet()
+                .stream()
                 .filter(entry -> entry.getKey().rankIndex() == rank)
                 .sorted(Comparator.comparingInt(entry -> entry.getKey().fileIndex()))
                 .map(Entry::getValue)
