@@ -37,6 +37,7 @@ public class Game {
     private void checkKingIsAlive() {
         if (board.isKingDead()) {
             end();
+            gameRepository.updateGameOver();
         }
     }
 
@@ -47,7 +48,7 @@ public class Game {
 
     public void start() {
         state = state.start();
-        if (gameRepository.isGameAlreadyStarted()) {
+        if (gameRepository.isGameAlreadyStarted() && !gameRepository.isGameOver()) {
             board.initTurnIfExist();
             board.initBoardIfExist();
             return;

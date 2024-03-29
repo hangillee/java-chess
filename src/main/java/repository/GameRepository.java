@@ -37,6 +37,17 @@ public class GameRepository {
         }
     }
 
+    public boolean isGameOver() {
+        final String query = "SELECT is_over FROM game";
+        try (final var preparedStatement = connection.prepareStatement(query)) {
+            final var resultSet = preparedStatement.executeQuery();
+            resultSet.next();
+            return resultSet.getBoolean("is_over");
+        } catch (Exception e) {
+            throw new IllegalStateException("게임 종료 여부를 확인할 수 없습니다.");
+        }
+    }
+
     public String findTurn() {
         final String query = "SELECT turn FROM game";
         try (final var preparedStatement = connection.prepareStatement(query)) {
@@ -56,6 +67,15 @@ public class GameRepository {
             preparedStatement.executeUpdate();
         } catch (Exception e) {
             throw new IllegalStateException("게임 차례를 변경할 수 없습니다.");
+        }
+    }
+
+    public void updateGameOver() {
+        final String query = "UPDATE game SET is_over = true WHERE id = 1";
+        try (final var preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.executeUpdate();
+        } catch (Exception e) {
+            throw new IllegalStateException("게임 종료 여부를 변경할 수 없습니다.");
         }
     }
 }
