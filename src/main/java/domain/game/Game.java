@@ -8,8 +8,11 @@ import domain.game.state.State;
 import domain.piece.Piece;
 import domain.piece.info.Color;
 import java.util.Map;
+import repository.GameRepository;
 
 public class Game {
+    private static final GameRepository gameRepository = new GameRepository();
+
     private State state;
     private final Board board;
 
@@ -44,6 +47,13 @@ public class Game {
 
     public void start() {
         state = state.start();
+        if (gameRepository.isGameAlreadyStarted()) {
+            board.initTurnIfExist();
+            board.initBoardIfExist();
+            return;
+        }
+        gameRepository.saveGame(Color.WHITE, true, false);
+        board.saveSquares();
     }
 
     public void end() {
@@ -64,6 +74,10 @@ public class Game {
 
     public boolean isNotEnded() {
         return state.isNotEnded();
+    }
+
+    public boolean isTurnOf(final Color color) {
+        return board.isTurnOf(color);
     }
 
     public Map<Position, Piece> board() {

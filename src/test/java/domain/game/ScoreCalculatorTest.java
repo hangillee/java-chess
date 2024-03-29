@@ -41,7 +41,7 @@ class ScoreCalculatorTest {
         Game game = new Game(board);
 
         assertAll(
-                () -> assertThat(game.calculateScore(Color.WHITE)).isEqualTo(0),
+                () -> assertThat(game.calculateScore(Color.WHITE)).isZero(),
                 () -> assertThat(game.calculateScore(Color.BLACK)).isEqualTo(20)
         );
     }

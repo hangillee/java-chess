@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import domain.board.Position;
+import domain.piece.info.Color;
 import domain.piece.info.File;
 import domain.piece.info.Rank;
 import org.junit.jupiter.api.BeforeEach;
@@ -68,6 +69,22 @@ class GameTest {
     void canMovePiecesInStart() {
         game.start();
 
+        if (game.isTurnOf(Color.BLACK)) {
+            assertBlackTurnMove();
+            return;
+        }
+        assertWhiteTurnMove();
+    }
+
+    private void assertBlackTurnMove() {
+        Position source = new Position(File.B, Rank.SEVEN);
+        Position target = new Position(File.B, Rank.FIVE);
+
+        assertThatCode(() -> game.moveByPosition(source, target))
+                .doesNotThrowAnyException();
+    }
+
+    private void assertWhiteTurnMove() {
         Position source = new Position(File.B, Rank.TWO);
         Position target = new Position(File.B, Rank.FOUR);
 
