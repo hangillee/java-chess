@@ -1,9 +1,11 @@
 package domain.game.state;
 
+import domain.board.Board;
+
 public class Init implements State {
     @Override
-    public State start() {
-        return new Start();
+    public State start(final Board board) {
+        return new Start(board);
     }
 
     @Override
@@ -29,5 +31,10 @@ public class Init implements State {
     @Override
     public boolean isNotEnded() {
         return true;
+    }
+
+    @Override
+    public State isKingDead() {
+        return this;
     }
 }

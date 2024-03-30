@@ -5,21 +5,27 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import domain.board.Board;
 import domain.board.Position;
+import domain.piece.Bishop;
+import domain.piece.King;
+import domain.piece.Knight;
+import domain.piece.Pawn;
+import domain.piece.Piece;
+import domain.piece.Queen;
+import domain.piece.Rook;
 import domain.piece.info.Color;
 import domain.piece.info.File;
 import domain.piece.info.Rank;
-import org.junit.jupiter.api.BeforeEach;
+import domain.piece.info.Type;
+import java.util.HashMap;
+import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class GameTest {
-    private Game game;
-
-    @BeforeEach
-    void setUp() {
-        game = new Game();
-    }
+    private final Game game = new Game();
+    private final Game kingDeadGame = new Game(new Board(generateDeadKingSquares()));
 
     @Test
     @DisplayName("Game은 생성될 때 Init 상태이다.")
@@ -59,7 +65,7 @@ class GameTest {
     void cannotReStartBeforeEnd() {
         game.start();
 
-        assertThatThrownBy(() -> game.start())
+        assertThatThrownBy(game::start)
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("게임이 이미 시작되어 있습니다.");
     }
@@ -69,22 +75,6 @@ class GameTest {
     void canMovePiecesInStart() {
         game.start();
 
-        if (game.isTurnOf(Color.BLACK)) {
-            assertBlackTurnMove();
-            return;
-        }
-        assertWhiteTurnMove();
-    }
-
-    private void assertBlackTurnMove() {
-        Position source = new Position(File.B, Rank.SEVEN);
-        Position target = new Position(File.B, Rank.FIVE);
-
-        assertThatCode(() -> game.moveByPosition(source, target))
-                .doesNotThrowAnyException();
-    }
-
-    private void assertWhiteTurnMove() {
         Position source = new Position(File.B, Rank.TWO);
         Position target = new Position(File.B, Rank.FOUR);
 
@@ -135,7 +125,7 @@ class GameTest {
     void restartAfterEnd() {
         game.end();
 
-        assertThatCode(() -> game.start())
+        assertThatCode(game::start)
                 .doesNotThrowAnyException();
     }
 
@@ -144,7 +134,7 @@ class GameTest {
     void cannotEndAfterEnd() {
         game.end();
 
-        assertThatThrownBy(() -> game.end())
+        assertThatThrownBy(game::end)
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("게임이 이미 종료되어 있습니다.");
     }
@@ -166,8 +156,36 @@ class GameTest {
     }
 
     @Test
+    @DisplayName("게임은 King이 죽으면 종료 상태가 된다.")
+    void checkKingIsDead() {
+        kingDeadGame.start();
+        kingDeadGame.moveByPosition(new Position(File.F, Rank.FOUR), new Position(File.E, Rank.SIX));
+
+        assertThat(kingDeadGame.isEnded()).isTrue();
+    }
+
+    @Test
     @DisplayName("게임은 보드를 반환할 수 있다.")
     void getBoard() {
         assertThat(game.board()).isNotNull();
+    }
+
+    private Map<Position, Piece> generateDeadKingSquares() {
+        return new HashMap<>(Map.ofEntries(
+                Map.entry(new Position(File.C, Rank.EIGHT), new Rook(Color.BLACK, Type.ROOK)),
+                Map.entry(new Position(File.A, Rank.SEVEN), new Pawn(Color.BLACK, Type.PAWN)),
+                Map.entry(new Position(File.C, Rank.SEVEN), new Pawn(Color.BLACK, Type.PAWN)),
+                Map.entry(new Position(File.D, Rank.SEVEN), new Bishop(Color.BLACK, Type.BISHOP)),
+                Map.entry(new Position(File.B, Rank.SIX), new Pawn(Color.BLACK, Type.PAWN)),
+                Map.entry(new Position(File.E, Rank.SIX), new Queen(Color.BLACK, Type.QUEEN)),
+                Map.entry(new Position(File.F, Rank.FOUR), new Knight(Color.WHITE, Type.KNIGHT)),
+                Map.entry(new Position(File.G, Rank.FOUR), new Queen(Color.WHITE, Type.QUEEN)),
+                Map.entry(new Position(File.F, Rank.THREE), new Pawn(Color.WHITE, Type.PAWN)),
+                Map.entry(new Position(File.H, Rank.THREE), new Pawn(Color.WHITE, Type.PAWN)),
+                Map.entry(new Position(File.F, Rank.TWO), new Pawn(Color.WHITE, Type.PAWN)),
+                Map.entry(new Position(File.G, Rank.TWO), new Pawn(Color.WHITE, Type.PAWN)),
+                Map.entry(new Position(File.E, Rank.ONE), new Rook(Color.WHITE, Type.ROOK)),
+                Map.entry(new Position(File.H, Rank.ONE), new King(Color.WHITE, Type.KING))
+        ));
     }
 }

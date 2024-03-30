@@ -9,12 +9,11 @@ import domain.strategy.MoveStrategy;
 import java.util.List;
 import java.util.Map;
 import repository.BoardRepository;
-import repository.DBConnector;
-import repository.GameRepository;
 
 public class Board {
     private static final int BOARD_UPPER_BOUND = 7;
     private static final int BOARD_LOWER_BOUND = 0;
+    private static final BoardRepository boardRepository = new BoardRepository();
 
     private Color turn;
     private final Map<Position, Piece> squares;
@@ -62,14 +61,12 @@ public class Board {
     }
 
     private void deleteSquares() {
-        final BoardRepository boardRepository = new BoardRepository(DBConnector.getConnection());
         boardRepository.deleteSquares();
     }
 
     private void updateTurn() {
-        final GameRepository gameRepository = new GameRepository();
         turn = Color.opposite(turn);
-        gameRepository.updateTurn(turn);
+        boardRepository.updateTurn(turn);
     }
 
     private boolean isFileInBoard(final Position source) {
@@ -86,7 +83,7 @@ public class Board {
         return squares.values()
                 .stream()
                 .filter(piece -> piece.isColorOf(turn))
-                .noneMatch(piece -> piece.type() == Type.KING);
+                .noneMatch(Piece::isKing);
     }
 
     public Map<Position, Piece> squares() {
@@ -94,7 +91,6 @@ public class Board {
     }
 
     public void saveSquares() {
-        final BoardRepository boardRepository = new BoardRepository(DBConnector.getConnection());
         squares.forEach((position, piece) -> {
             final int positionId = boardRepository.savePosition(position);
             final int pieceId = boardRepository.savePiece(piece);
@@ -103,17 +99,11 @@ public class Board {
     }
 
     public void initTurnIfExist() {
-        final GameRepository gameRepository = new GameRepository();
-        turn = Color.valueOf(gameRepository.findTurn());
+        turn = Color.valueOf(boardRepository.findTurn());
     }
 
     public void initBoardIfExist() {
-        final BoardRepository boardRepository = new BoardRepository(DBConnector.getConnection());
         squares.clear();
         squares.putAll(boardRepository.findAllSquares());
-    }
-
-    public boolean isTurnOf(final Color color) {
-        return color == turn;
     }
 }

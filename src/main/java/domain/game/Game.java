@@ -31,12 +31,12 @@ public class Game {
             throw new IllegalStateException("게임 플레이 중이 아닙니다.");
         }
         board.moveByPosition(source, target);
-        checkKingIsAlive();
+        checkKingIsDead();
     }
 
-    private void checkKingIsAlive() {
-        if (board.isKingDead()) {
-            end();
+    private void checkKingIsDead() {
+        state = state.isKingDead();
+        if (state.isEnded()) {
             gameRepository.updateGameOver();
         }
     }
@@ -47,7 +47,7 @@ public class Game {
     }
 
     public void start() {
-        state = state.start();
+        state = state.start(board);
         if (gameRepository.isGameAlreadyStarted() && !gameRepository.isGameOver()) {
             board.initTurnIfExist();
             board.initBoardIfExist();
@@ -75,10 +75,6 @@ public class Game {
 
     public boolean isNotEnded() {
         return state.isNotEnded();
-    }
-
-    public boolean isTurnOf(final Color color) {
-        return board.isTurnOf(color);
     }
 
     public Map<Position, Piece> board() {

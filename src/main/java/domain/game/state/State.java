@@ -1,7 +1,9 @@
 package domain.game.state;
 
+import domain.board.Board;
+
 public interface State {
-    State start();
+    State start(final Board board);
 
     State end();
 
@@ -12,4 +14,6 @@ public interface State {
     boolean isEnded();
 
     boolean isNotEnded();
+
+    State isKingDead();
 }

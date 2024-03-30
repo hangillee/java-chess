@@ -15,12 +15,19 @@ public class ScoreCalculator {
         if (!isKingAlive(squares, color)) {
             return Score.findScoreByType(Type.KING);
         }
-        double totalScore = squares.values()
+        return calculateTotalScore(squares, color) - calculatePawnScore(squares, color);
+    }
+
+    private double calculateTotalScore(final Map<Position, Piece> squares, final Color color) {
+        return squares.values()
                 .stream()
                 .filter(piece -> piece.isColorOf(color))
                 .mapToDouble(piece -> Score.findScoreByType(piece.type()))
                 .sum();
-        return totalScore - countPawnOnSameFile(squares, color) * PAWN_ALTERNATIVE_SCORE;
+    }
+
+    private double calculatePawnScore(final Map<Position, Piece> squares, final Color color) {
+        return countPawnOnSameFile(squares, color) * PAWN_ALTERNATIVE_SCORE;
     }
 
     private int countPawnOnSameFile(final Map<Position, Piece> squares, final Color color) {
