@@ -20,7 +20,7 @@ public class BoardRepository {
         try {
             this.pool = MysqlConnectionPool.create("chess", "root", "root");
         } catch (SQLException e) {
-            throw new IllegalStateException("DB 연결에 실패했습니다. " + e.getMessage());
+            throw new IllegalStateException("DB 연결에 실패했습니다.");
         }
     }
 
@@ -35,11 +35,11 @@ public class BoardRepository {
             preparedStatement.setString(2, type);
             preparedStatement.executeUpdate();
             final ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
-            pool.releaseConnection(connection);
             return getSavedPieceId(generatedKeys);
         } catch (Exception e) {
-            pool.releaseConnection(connection);
             throw new IllegalArgumentException("기물 저장에 실패했습니다.");
+        } finally {
+            pool.releaseConnection(connection);
         }
     }
 
@@ -63,11 +63,11 @@ public class BoardRepository {
             preparedStatement.setInt(2, rank);
             preparedStatement.executeUpdate();
             final ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
-            pool.releaseConnection(connection);
             return getSavedPositionId(generatedKeys);
         } catch (Exception e) {
-            pool.releaseConnection(connection);
             throw new IllegalArgumentException("위치 저장에 실패했습니다.");
+        } finally {
+            pool.releaseConnection(connection);
         }
     }
 
@@ -87,10 +87,10 @@ public class BoardRepository {
             preparedStatement.setInt(1, positionId);
             preparedStatement.setInt(2, pieceId);
             preparedStatement.executeUpdate();
-            pool.releaseConnection(connection);
         } catch (Exception e) {
-            pool.releaseConnection(connection);
             throw new IllegalStateException("보드 저장에 실패했습니다.");
+        } finally {
+            pool.releaseConnection(connection);
         }
     }
 
@@ -101,11 +101,11 @@ public class BoardRepository {
                 + "JOIN piece ON square.piece_id = piece.id";
         try (final var preparedStatement = connection.prepareStatement(query);
              final var resultSet = preparedStatement.executeQuery()) {
-            pool.releaseConnection(connection);
             return createSquares(resultSet);
         } catch (Exception e) {
-            pool.releaseConnection(connection);
             throw new IllegalStateException("보드 조회에 실패했습니다.");
+        } finally {
+            pool.releaseConnection(connection);
         }
     }
 
@@ -137,11 +137,11 @@ public class BoardRepository {
         try (final var preparedStatement = connection.prepareStatement(query);
              final var resultSet = preparedStatement.executeQuery()) {
             resultSet.next();
-            pool.releaseConnection(connection);
             return resultSet.getString("turn");
         } catch (Exception e) {
-            pool.releaseConnection(connection);
             throw new IllegalStateException("게임 차례를 확인할 수 없습니다.");
+        } finally {
+            pool.releaseConnection(connection);
         }
     }
 
@@ -153,10 +153,10 @@ public class BoardRepository {
         try (final var preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, turnValue);
             preparedStatement.executeUpdate();
-            pool.releaseConnection(connection);
         } catch (Exception e) {
-            pool.releaseConnection(connection);
             throw new IllegalStateException("게임 차례를 변경할 수 없습니다.");
+        } finally {
+            pool.releaseConnection(connection);
         }
     }
 
@@ -168,10 +168,10 @@ public class BoardRepository {
             restartAutoIncrement(connection, "square");
             deletePositions(connection);
             deletePieces(connection);
-            pool.releaseConnection(connection);
         } catch (Exception e) {
-            pool.releaseConnection(connection);
             throw new IllegalStateException("보드 초기화에 실패했습니다.");
+        } finally {
+            pool.releaseConnection(connection);
         }
     }
 
